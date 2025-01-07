@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Philip Fibranz",
+  "classifications": [
+    "Common",
+    "Code"
+  ],
+  "identity": "APSTeam.RequestGroup",
+  "name": "Request File Group",
+  "shortName": "request-group",
+  "sourceName": "request-group",
+  "tags": {
+    "language": "C#",
+    "type": "item"
+  },
+  "symbols": {
+    "DefaultNamespace": {
+      "type": "bind",
+      "binding": "msbuild:RootNamespace",
+      "replaces": "ResultGroupNamespace"
+    },
+    "GroupName": {
+      "type": "parameter",
+      "description": "Name of the Request",
+      "replaces": "RequestGroup",
+      "fileRename": "RequestGroup",
+      "datatype": "string",
+      "isRequired": true
+    },
+    "RequestType": {
+      "type": "parameter",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "Query",
+          "description": "For non-mutating requests"
+        },
+        {
+          "choice": "Command",
+          "description": "For mutating requests"
+        }
+      ],
+      "defaultValue": "Query",
+      "isRequired": true
+    },
+    "properType": {
+      "type": "derived",
+      "valueSource": "RequestType",
+      "replaces": "RequestType",
+      "fileRename": "RequestType",
+      "valueTransform": "firstUpperCase"
+    },
+    "IsCommand": {
+      "type": "computed",
+      "value": "(properType) == \"Command\""
+    },
+    "IsQuery": {
+      "type": "computed",
+      "value": "(properType) == \"Query\""
+    }
+  },
+  "forms": {
+    "firstUpperCase": {
+      "identifier": "firstUpperCase"
+    }
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "condition": "(IsCommand)",
+          "exclude": [
+            "Queries/**/*"
+          ]
+        },
+        {
+          "condition": "(IsQuery)",
+          "exclude": [
+            "Commands/**/*"
+          ]
+        }
+      ]
+    }
+  ]
+}
