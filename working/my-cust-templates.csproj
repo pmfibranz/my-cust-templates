@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+    <PackageId>Fibranz.MyCustTemplates</PackageId>
+    <TemplateGroupID>AspNetCore</TemplateGroupID>
+    <Authors>Philip Fibranz</Authors>
+    <Description>My Custom Templates</Description>
+    <PackageProjectUrl>https://github.com/pmfibranz/my-cust-templates</PackageProjectUrl>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeSource>false</IncludeSource>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <UsingToolTemplateLocalizer>true</UsingToolTemplateLocalizer>
+    <IsPackable>true</IsPackable>
+    <IsShipping>true</IsShipping>
+    <IsShippingPackage>true</IsShippingPackage>
+    <NoWarn>$(NoWarn);2008;NU5105</NoWarn>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <language>en-US</language>
+    <PackageType>Template</PackageType>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="content\**">
+      <PackagePath>content</PackagePath>
+    </Content>
+  </ItemGroup>
+</Project>
