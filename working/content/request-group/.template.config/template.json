@@ -8,7 +8,10 @@
   "identity": "APSTeam.RequestGroup",
   "name": "Request File Group",
   "shortName": "request-group",
-  "sourceName": "request-group",
+  "sourceName": "RequestGroup",
+  "defaultName": "RequestGroup",
+  "preferDefaultName": false,
+  "requireName": true,
   "tags": {
     "language": "C#",
     "type": "item"
@@ -19,15 +22,15 @@
       "binding": "msbuild:RootNamespace",
       "replaces": "ResultGroupNamespace"
     },
-    "GroupName": {
+    "domain": {
       "type": "parameter",
-      "description": "Name of the Request",
-      "replaces": "RequestGroup",
-      "fileRename": "RequestGroup",
+      "description": "Domain of the Request",
       "datatype": "string",
+      "replaces": "RequestDomain",
+      "fileRename": "RequestDomain",
       "isRequired": true
     },
-    "RequestType": {
+    "operationType": {
       "type": "parameter",
       "datatype": "choice",
       "choices": [
@@ -43,9 +46,25 @@
       "defaultValue": "Query",
       "isRequired": true
     },
+    "isSharedVM": {
+      "type": "parameter",
+      "datatype": "bool",
+      "displayName": "Is Shared View Model",
+      "description": "Indicates if the view model should be created under the request group or the shared folder",
+      "isRequired": false,
+      "defaultValue": "false"
+    },
+    "includeViewModel": {
+      "type": "parameter",
+      "datatype": "bool",
+      "displayName": "Include View Model",
+      "description": "Indicates if the view model should be included in the request file",
+      "isRequired": false,
+      "defaultValue": "true"
+    },
     "properType": {
       "type": "derived",
-      "valueSource": "RequestType",
+      "valueSource": "operationType",
       "replaces": "RequestType",
       "fileRename": "RequestType",
       "valueTransform": "firstUpperCase"
@@ -57,6 +76,41 @@
     "IsQuery": {
       "type": "computed",
       "value": "(properType) == \"Query\""
+    },
+    "PluralType": {
+      "type": "generated",
+      "generator": "switch",
+      "datatype": "string",
+      "fileRename": "PluralType",
+      "replaces": "PluralType",
+      "parameters": {
+        "evaluator": "C++",
+        "cases": [
+          {
+            "condition": "IsCommand",
+            "value": "Commands"
+          },
+          {
+            "condition": "IsQuery",
+            "value": "Queries"
+          }
+        ]
+      }
+    },
+    "AppNamespace": {
+      "type": "generated",
+      "replaces": "AppNamespace",
+      "datatype": "string",
+      "generator": "regex",
+      "parameters": {
+        "source": "DefaultNamespace",
+        "steps": [
+          {
+            "regex": "\\..*$",
+            "replacement": ""
+          }
+        ]
+      }
     }
   },
   "forms": {
@@ -68,15 +122,28 @@
     {
       "modifiers": [
         {
-          "condition": "(IsCommand)",
+          "condition": "(isSharedVM)",
+          "include": [
+            "RequestDomain/Shared/RequestGroupRequestTypeVM.cs"
+          ],
           "exclude": [
-            "Queries/**/*"
+            "RequestDomain/PluralType/RequestGroup/RequestGroupRequestTypeVM.cs"
           ]
         },
         {
-          "condition": "(IsQuery)",
+          "condition": "!(isSharedVM)",
+          "include": [
+            "RequestDomain/PluralType/RequestGroup/RequestGroupRequestTypeVM.cs"
+          ],
           "exclude": [
-            "Commands/**/*"
+            "RequestDomain/Shared/RequestGroupRequestTypeVM.cs"
+          ]
+        },
+        {
+          "condition": "!(includeViewModel)",
+          "exclude": [
+            "RequestDomain/PluralType/RequestGroup/RequestGroupRequestTypeVM.cs",
+            "RequestDomain/Shared/RequestGroupRequestTypeVM.cs"
           ]
         }
       ]

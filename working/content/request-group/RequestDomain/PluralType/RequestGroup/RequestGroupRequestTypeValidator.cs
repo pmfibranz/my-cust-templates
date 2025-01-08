@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace ResultGroupNamespace;
+namespace ResultGroupNamespace.RequestDomain.RequestType;
 
 public sealed class RequestGroupRequestTypeValidator : AbstractValidator<RequestGroupRequestType>
 {
